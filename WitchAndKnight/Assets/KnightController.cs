@@ -37,14 +37,18 @@ public class KnightController : MonoBehaviour {
 		float vertInputRaw = Input.GetAxisRaw ("Vertical"); // snapped to -1,0,1
 		float horizInputRaw = Input.GetAxisRaw ("Horizontal"); // snapped to -1,0,1
 
+		/*
 		float vertInputPad = Input.GetAxis ("padVertical");
 		float horizInputPad = Input.GetAxis ("padHorizontal");
+*/
 
 		float dodgeVertInputRaw = Input.GetAxisRaw ("DodgeVert");
 		float dodgeHorizInputRaw = Input.GetAxisRaw ("DodgeHoriz");
 
+		/*
 		float dodgeVertInputPad = Input.GetAxis ("padDodgeVert");
 		float dodgeHorizInputPad = Input.GetAxis ("padDodgeHoriz");
+		*/
 		// override regular movement when dodge rolling
 		bool overRideMove = (dodgeVertInputRaw != 0 || dodgeHorizInputRaw != 0) && canDodgeRoll;
 
@@ -63,6 +67,7 @@ public class KnightController : MonoBehaviour {
 			moveVector += Vector3.right * (horizInputRaw * moveSpeed);
 		}
 
+		/*
 		// gamepad movement
 		if (vertInputPad != 0 && !overRideMove) {
 			moveVector += Vector3.forward * (vertInputPad * moveSpeed);
@@ -70,6 +75,7 @@ public class KnightController : MonoBehaviour {
 		if (horizInputPad != 0 && !overRideMove) {
 			moveVector += Vector3.right * (horizInputPad * moveSpeed);
 		}
+		*/
 
 
 		// dodge roll
@@ -82,6 +88,7 @@ public class KnightController : MonoBehaviour {
 			dodgeRolling = true;
 		}
 
+		/*
 		if (dodgeVertInputPad != 0 && canDodgeRoll) {
 			moveVector += Vector3.forward * (dodgeVertInputPad * dodgeRollSpeed);
 			dodgeRolling = true;
@@ -90,6 +97,7 @@ public class KnightController : MonoBehaviour {
 			moveVector += Vector3.right * (dodgeHorizInputPad * dodgeRollSpeed);
 			dodgeRolling = true;
 		}
+		*/
 
 		// move
 		transform.GetComponent<CharacterController>().Move(moveVector);

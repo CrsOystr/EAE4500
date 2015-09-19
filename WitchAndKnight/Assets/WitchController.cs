@@ -15,9 +15,10 @@ public class WitchController : MonoBehaviour {
 	void Update () {
 		float vertInputRaw = Input.GetAxis ("WitchLeft");
 		float horizInputRaw = Input.GetAxis ("WitchRight");
+		/*
 		float vertInputPad = Input.GetAxis ("padWitchLeft");
 		float horizInputPad = Input.GetAxis ("padWitchRight");
-
+*/
 		float moveVector = 0; 
 
 		if (vertInputRaw != 0) {
@@ -34,6 +35,7 @@ public class WitchController : MonoBehaviour {
 
 		}
 
+		/*
 		if (vertInputPad != 0) {
 			moveVector = 50;
 		}
@@ -41,6 +43,7 @@ public class WitchController : MonoBehaviour {
 		if (horizInputPad != 0) {
 			moveVector = -50;
 		}
+		*/
 		//transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up * speedz * moveSpeed*Time.deltaTime);
 		transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up * Time.deltaTime * moveVector *  moveSpeed);
 
