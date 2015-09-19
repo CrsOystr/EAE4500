@@ -13,27 +13,28 @@ public class WitchController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		bool vertInputRaw = Input.GetKeyDown (KeyCode.E); // snapped to -1,0,1
-		bool horizInputRaw = Input.GetKeyDown (KeyCode.Q);
+		float vertInputRaw = Input.GetAxis ("WitchLeft");
+		float horizInputRaw = Input.GetAxis ("WitchRight");
 
-		float speedz = 20; 
-		if (vertInputRaw == true) {
+		float moveVector = 0; 
+
+		if (vertInputRaw != 0) {
 			//transform.Translate(Vector3.forward * (vertInputRaw * moveSpeed), 0);
 			//moveVector += Vector3.forward * (vertInputRaw * moveSpeed);
-			speedz = 50;
+			moveVector  = 50;
 			
 			
 		} 
-		if (horizInputRaw == true) {
+		if (horizInputRaw != 0) {
 			//transform.Translate(Vector3.right * (horizInputRaw * moveSpeed), 0);
 			//moveVector += Vector3.right * (horizInputRaw * moveSpeed);
-			speedz = -50;
+			moveVector = -50;
 
 		}
 
 
 		//transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up * speedz * moveSpeed*Time.deltaTime);
-		transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up *Time.deltaTime * 20);
+		transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up * Time.deltaTime * moveVector *  moveSpeed);
 
 	}
 }
