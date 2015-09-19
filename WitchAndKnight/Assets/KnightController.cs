@@ -10,34 +10,26 @@ public class KnightController : MonoBehaviour {
 	private bool dodgeRolling;
 	private bool canDodgeRoll;
 	private float dodgeRollTimer;
-	private float dodgeRollCooldown;
+	//private float dodgeRollCooldown;
+
 	// Use this for initialization
 	void Start () {
 		dodgeRollTimer = 0f;
 		dodgeRolling = false;
 		canDodgeRoll = true;
-		dodgeRollCooldown = 0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		// dodge roll timekeeping
-		if (dodgeRolling) {
-			dodgeRollTimer += Time.deltaTime;
-			if (dodgeRollTimer > dodgeRollTime)			
-			{
-				canDodgeRoll = false;
-				dodgeRolling = false;
-					// trying to force a cooldown period for analog input
-				/*
-				dodgeRollCooldown +=Time.deltaTime;
-				if (dodgeRollCooldown > 50f)
-				{
-					dodgeRollCooldown = 0f;
+				// dodge roll timekeeping
+				if (dodgeRolling) {
+						dodgeRollTimer += Time.deltaTime;
+						if (dodgeRollTimer > dodgeRollTime) {
+								canDodgeRoll = false;
+								dodgeRolling = false;
+								} 
 				}
-			} */
-		}
 
 		Vector3 moveVector = new Vector3 ();
 
@@ -57,15 +49,10 @@ public class KnightController : MonoBehaviour {
 		bool overRideMove = (dodgeVertInputRaw != 0 || dodgeHorizInputRaw != 0) && canDodgeRoll;
 
 		// kill dodge roll
-		if ((dodgeVertInputRaw == 0 && dodgeHorizInputRaw == 0) || (dodgeVertInputPad == 0 && dodgeHorizInputPad == 0)) {
+		if (dodgeVertInputRaw == 0 && dodgeHorizInputRaw == 0) {
 			dodgeRollTimer = 0f;
 			canDodgeRoll = true;
 		}
-		/*
-		if (dodgeRollCooldown > 0f) {
-			canDodgeRoll = false;
-			}
-		*/
 
 
 		// regular movement
