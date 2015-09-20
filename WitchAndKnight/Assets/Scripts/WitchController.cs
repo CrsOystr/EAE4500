@@ -4,10 +4,12 @@ using System.Collections;
 public class WitchController : MonoBehaviour {
 
 	public float moveSpeed;
-	public float spellSpeed;
 	public float spellCooldown;
 	public GameObject spellOne;
+	public float spellSpeed;
+	public float spellLiveTime;
 
+	private float spellTimer;
     
 	// Use this for initialization
 	void Start () { 
@@ -29,8 +31,10 @@ public class WitchController : MonoBehaviour {
 
 			moveVector = -50;
 		}
-		if (spellOneInput != 0) {
-			GameObject newProjectile = Instantiate( spellOne, transform.position , transform.rotation ) as GameObject;
+		if (spellOneInput != 0 && Time.time > spellTimer + spellCooldown) {
+			spellTimer = Time.time;
+			GameObject newProjectile = Instantiate(spellOne, transform.position , transform.rotation ) as GameObject;
+
 		}
 
 		transform.parent.GetComponentInParent<Transform> ().Rotate (Vector3.up * Time.deltaTime * moveVector *  moveSpeed);
