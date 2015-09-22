@@ -109,6 +109,10 @@ public class KnightController : MonoBehaviour {
 
 		// move
 		transform.GetComponent<CharacterController>().Move(moveVector);
-		
+		// rotate into moving direction
+		/*
+		if (moveVector != Vector3.zero)
+			transform.rotation = Quaternion.LookRotation(moveVector);	
+			*/
 	}
 }
