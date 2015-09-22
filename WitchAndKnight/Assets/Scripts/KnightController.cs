@@ -20,6 +20,8 @@ public class KnightController : MonoBehaviour {
 	private int slashState; // 0: not slashing, 1: extending sword, 2: drawing sword in
 	private float slashTimer;
 
+	public GameObject rotateCyl;
+
 	// Use this for initialization
 	void Start () {
 		dodgeRollTimer = 0f;
@@ -28,6 +30,7 @@ public class KnightController : MonoBehaviour {
 		sword = transform.Find ("Sword").gameObject;
 		slashState = 0;
 		slashTimer = 0f;
+		//witch = FindObjectOfType<WitchController> ();
 	}
 	
 	// Update is called once per frame
@@ -110,9 +113,10 @@ public class KnightController : MonoBehaviour {
 		// move
 		transform.GetComponent<CharacterController>().Move(moveVector);
 		// rotate into moving direction
-		/*
-		if (moveVector != Vector3.zero)
-			transform.rotation = Quaternion.LookRotation(moveVector);	
-			*/
+		if (moveVector != Vector3.zero) {
+			Quaternion oldWitchRot = rotateCyl.transform.rotation;
+			transform.rotation = Quaternion.LookRotation (moveVector);
+			rotateCyl.transform.rotation = oldWitchRot;
+		}
 	}
 }
