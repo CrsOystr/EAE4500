@@ -6,14 +6,16 @@ public class KnightController : MonoBehaviour {
 	public float moveSpeed;
 	public float dodgeRollSpeed;
 	public float dodgeRollTime;
+	public float dodgeRollDelay; // time after a dodge roll before the next one is allowed
 	public float slashSpeed;
 	public float slashTime;
 
 	// dodge roll variables
 	private bool dodgeRolling;
+	private bool dodgeDelayed;
 	private bool canDodgeRoll;
 	private float dodgeRollTimer;
-	//private float dodgeRollCooldown;
+	private float dodgeRollDelayTimer;
 
 	// slash variables
 	private GameObject sword;
@@ -25,14 +27,27 @@ public class KnightController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		dodgeRollTimer = 0f;
+		dodgeRollDelayTimer = 0f;
 		dodgeRolling = false;
+		dodgeDelayed = false;
 		canDodgeRoll = true;
 		sword = transform.Find ("Sword").gameObject;
 		slashState = 0;
 		slashTimer = 0f;
-		//witch = FindObjectOfType<WitchController> ();
 	}
-	
+
+	/// <summary>
+	/// Kills the dodge roll.
+	/// </summary>
+	private void KillDodgeRoll()
+	{
+		dodgeRollTimer = 0f;
+		dodgeRollDelayTimer = 0f;
+		dodgeDelayed = true;
+		dodgeRolling = false;
+		canDodgeRoll = false;
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -40,9 +55,15 @@ public class KnightController : MonoBehaviour {
 		if (dodgeRolling) {
 			dodgeRollTimer += Time.deltaTime;
 			if (dodgeRollTimer > dodgeRollTime) {
-				canDodgeRoll = false;
-				dodgeRolling = false;
+				canDodgeRoll = false;  // don't fully kill the dodge roll, we have to wait for stick to be reset
 			} 
+		}
+		if (dodgeDelayed) {
+			dodgeRollDelayTimer += Time.deltaTime;
+			if (dodgeRollDelayTimer > dodgeRollDelay) {
+				canDodgeRoll = true;
+				dodgeDelayed = false;
+			}
 		}
 
 		// slash timekeeping
@@ -79,12 +100,10 @@ public class KnightController : MonoBehaviour {
 		// override regular movement when dodge rolling
 		bool overRideMove = (dodgeVertInputRaw != 0 || dodgeHorizInputRaw != 0) && canDodgeRoll;
 
-		// kill dodge roll
-		if (dodgeVertInputRaw == 0 && dodgeHorizInputRaw == 0) {
-			dodgeRollTimer = 0f;
-			canDodgeRoll = true;
+		// kill dodge roll upon resetting joystick to center
+		if (dodgeRolling && dodgeVertInputRaw == 0 && dodgeHorizInputRaw == 0) {
+			KillDodgeRoll();
 		}
-
 
 		// regular movement
 		if (vertInputRaw != 0 && !overRideMove) {
