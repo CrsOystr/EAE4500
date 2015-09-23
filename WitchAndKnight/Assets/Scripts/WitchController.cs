@@ -34,6 +34,7 @@ public class WitchController : MonoBehaviour {
 		if (spellOneInput != 0 && Time.time > spellTimer + spellCooldown) {
 			spellTimer = Time.time;
 			GameObject newProjectile = Instantiate(spellOne, transform.position , transform.rotation ) as GameObject;
+			//newProjectile.transform.parent = this.transform;
 
 		}
 

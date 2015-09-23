@@ -8,11 +8,13 @@ public class SpellOneScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		this.rigidbody.velocity = Vector3.zero;
+		this.rigidbody.angularVelocity = Vector3.zero;
 		Object.Destroy(gameObject, timeToLive);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		transform.Translate (Vector3.forward * spellSpeed *Time.deltaTime);
+		transform.Translate (Vector3.forward * spellSpeed * Time.deltaTime);
 	}
 }
