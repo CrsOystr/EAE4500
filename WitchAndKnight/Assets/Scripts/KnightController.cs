@@ -9,6 +9,7 @@ public class KnightController : MonoBehaviour {
 	public float dodgeRollDelay; // time after a dodge roll before the next one is allowed
 	public float slashSpeed;
 	public float slashTime;
+	public float slashAngle;
 
 	// dodge roll variables
 	private bool dodgeRolling;
@@ -18,9 +19,10 @@ public class KnightController : MonoBehaviour {
 	private float dodgeRollDelayTimer;
 
 	// slash variables
-	private GameObject sword;
-	private int slashState; // 0: not slashing, 1: extending sword, 2: drawing sword in
+	public GameObject sword;
+	private bool slashing;
 	private float slashTimer;
+	public GameObject swordRotater;
 
 	public GameObject rotateCyl;
 
@@ -31,8 +33,7 @@ public class KnightController : MonoBehaviour {
 		dodgeRolling = false;
 		dodgeDelayed = false;
 		canDodgeRoll = true;
-		sword = transform.Find ("Sword").gameObject;
-		slashState = 0;
+		slashing = false;
 		slashTimer = 0f;
 	}
 
@@ -46,6 +47,20 @@ public class KnightController : MonoBehaviour {
 		dodgeDelayed = true;
 		dodgeRolling = false;
 		canDodgeRoll = false;
+	}
+
+	/// <summary>
+	/// Kills the slash.
+	/// </summary>
+	private void KillSlash()
+	{
+		slashing = false;
+		slashTimer = 0f;
+		float newY = swordRotater.transform.localEulerAngles.y;
+
+		print (newY);
+
+		swordRotater.transform.Rotate (new Vector3(0,-newY,0));
 	}
 
 	// Update is called once per frame
@@ -67,25 +82,14 @@ public class KnightController : MonoBehaviour {
 		}
 
 		// slash timekeeping
-		if (slashState > 0) {
+		if (slashing) {
 			slashTimer += Time.deltaTime;
-		}
-		switch (slashState) {
-			case 0: // not slashing
-				break;
-			case 1: // extending sword
-				sword.transform.Translate(Vector3.forward * Time.deltaTime * slashSpeed, this.transform);
-				if (slashTimer > slashTime/2)
-					slashState = 2;
-				break;
-
-			case 2: // withdrawing sword
-				sword.transform.Translate(Vector3.back * Time.deltaTime * slashSpeed, this.transform);
-				if (slashTimer > slashTime){
-					slashState = 0;
-					slashTimer = 0f;
-				}
-				break;
+			if (slashTimer > slashTime){ // slash is over
+				KillSlash();
+			}
+			else if (swordRotater.transform.localEulerAngles.y < slashAngle || swordRotater.transform.localEulerAngles.y > slashAngle + 180f){
+				swordRotater.transform.Rotate (new Vector3(0,slashSpeed*Time.deltaTime*slashAngle,0));
+			}
 		}
 
 		Vector3 moveVector = new Vector3 ();
@@ -125,9 +129,15 @@ public class KnightController : MonoBehaviour {
 
 		// slash
 		if (Input.GetButtonDown ("Slash")) {
-			if (slashState==0)
-				slashState = 1;			
+			if (!slashing){
+				slashing = true;
+				swordRotater.transform.Rotate (new Vector3(0,-slashAngle,0));
+			}
 		}
+//		if (Input.GetButtonUp ("Slash")) {
+//			if (slashing)
+//				KillSlash();
+//		}
 
 		// move
 		transform.GetComponent<CharacterController>().Move(moveVector);
