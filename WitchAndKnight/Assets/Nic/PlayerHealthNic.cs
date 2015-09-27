@@ -8,8 +8,9 @@ public class PlayerHealthNic : MonoBehaviour {
 	public int startingHP = 25;
 	public float damageRate = 0.5f;
 	private float currentHP = 25;
-	private Text HealthText;
-	
+	public GameObject HealthText;
+	public Text healthText;
+
 	// Stores the respawn position for the character
 	private Vector3 respawnLocation;
 	
@@ -22,16 +23,16 @@ public class PlayerHealthNic : MonoBehaviour {
 		currentHP = startingHP;
 		
 		// Uses the handy "Find" and "Get Component" functions to grab a reference to the HealthText game object and store it in our HealthText variable
-		HealthText = GameObject.Find("HealthText").GetComponent<Text>();
-		
+		//HealthText = GameObject.Find("HealthText").GetComponent<Text>();
+		healthText = HealthText.GetComponent<Text>();
 		// Set the HUD to display the current amount of health
-		HealthText.text = "" + currentHP + " Player HP";
+		healthText.text = "" + currentHP + " Player HP";
 		
 	}
 	
 	// The OnTriggerStay function is called when the collider attached to this game object (whatever object the script is attached to) continuously another collider set to be a "trigger"
 	void OnTriggerStay (Collider collider)
-	{
+	{	
 		// We want to check if the thing we're colliding with is a damaging, this will differentiate it from other trigger objects which we might add in the future
 		if (collider.tag == "damaging")
 		{
@@ -42,9 +43,10 @@ public class PlayerHealthNic : MonoBehaviour {
 			// If you do want to reset the level you can instead Application.LoadLevel("YourLevelName") or Application.LoadLevel(0) if you want to load the first level.
 			if (currentHP <= 0){
 				Destroy(this.gameObject);
+				Application.LoadLevel ("GameOver");
 			}
 
-			HealthText.text = "" + Mathf.Round(currentHP) + " Player HP";
+			healthText.text = "" + Mathf.Round(currentHP) + " Player HP";
 		}
 	}
 }
