@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class PlayerHealth : MonoBehaviour {
+public class PlayerHealthCole : MonoBehaviour {
 
 	public int startingHP = 25;
 	public float damageRate = 0.5f;

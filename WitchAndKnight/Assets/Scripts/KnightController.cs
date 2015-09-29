@@ -40,6 +40,21 @@ public class KnightController : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Knocks the player back by the specified amount, in the opposite direction as given collided object.
+	/// </summary>
+	/// <param name="amt">Amt.</param>
+	public void Knockback(float amt, GameObject obj)
+	{
+		CharacterController cc = transform.GetComponent<CharacterController> ();
+		Vector3 moveDirection = (this.transform.position - obj.rigidbody.position); //.normalized;
+		moveDirection.y = 0;
+		//moveDirection = transform.TransformDirection(moveDirection);
+		moveDirection *= amt;
+
+		cc.Move (moveDirection);
+	}
+
+	/// <summary>
 	/// Kills the dodge roll.
 	/// </summary>
 	private void KillDodgeRoll()
@@ -59,8 +74,6 @@ public class KnightController : MonoBehaviour {
 		slashing = false;
 		slashTimer = 0f;
 		float newY = swordRotater.transform.localEulerAngles.y;
-
-		print (newY);
 
 		swordRotater.transform.Rotate (new Vector3(0,-newY,0));
 
