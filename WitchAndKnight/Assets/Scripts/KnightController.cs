@@ -35,6 +35,8 @@ public class KnightController : MonoBehaviour {
 		canDodgeRoll = true;
 		slashing = false;
 		slashTimer = 0f;
+
+		sword.SetActive (false);
 	}
 
 	/// <summary>
@@ -61,6 +63,8 @@ public class KnightController : MonoBehaviour {
 		print (newY);
 
 		swordRotater.transform.Rotate (new Vector3(0,-newY,0));
+
+		sword.SetActive (false);
 	}
 
 	// Update is called once per frame
@@ -132,6 +136,7 @@ public class KnightController : MonoBehaviour {
 			if (!slashing){
 				slashing = true;
 				swordRotater.transform.Rotate (new Vector3(0,-slashAngle,0));
+				sword.SetActive(true);
 			}
 		}
 //		if (Input.GetButtonUp ("Slash")) {
