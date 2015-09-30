@@ -9,19 +9,12 @@ public class PlayerHealth : MonoBehaviour {
 	public float damageRate = 0.5f;
 	private float currentHP = 25;
 	public GameObject HealthText;
-	public Text healthText;
+	private Text healthText;
 
 	public float knockbackAmt;
 	private KnightController kc;
-
-	// Stores the respawn position for the character
-	private Vector3 respawnLocation;
 	
 	void Start () {
-		
-		// Saves the current transform of the character for when we need to respawn later
-		respawnLocation = this.gameObject.transform.position;
-		
 		// Sets the current HP of the character to the starting HP
 		currentHP = startingHP;
 		
@@ -32,7 +25,6 @@ public class PlayerHealth : MonoBehaviour {
 		healthText.text = "" + currentHP + " Player HP";
 
 		kc = FindObjectOfType<KnightController> ();
-		
 	}
 	
 	// The OnTriggerStay function is called when the collider attached to this game object (whatever object the script is attached to) continuously another collider set to be a "trigger"
@@ -44,7 +36,7 @@ public class PlayerHealth : MonoBehaviour {
 			// Reduces the current health by the damage rate (remember this fires every frame!)
 			currentHP -= damageRate;
 
-			kc.Knockback(knockbackAmt, collider.gameObject);
+			//kc.Knockback(knockbackAmt, collider.gameObject);
 
 			// Checks if the currentHP is below or equal to 0, respawns the player and resets health (note that this doesn't "reset" the level, the previously collected items remain collected).
 			// If you do want to reset the level you can instead Application.LoadLevel("YourLevelName") or Application.LoadLevel(0) if you want to load the first level.

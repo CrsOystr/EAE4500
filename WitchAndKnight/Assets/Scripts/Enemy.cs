@@ -9,26 +9,29 @@ public class Enemy : MonoBehaviour {
 	public int startingHP = 10;
 	public float damageRate = 0.5f;
 	public int enemyNumber;
-	private float currentHP = 0;
 	public float comboCooldown = .3f;
-	private float countdownTimer;
-
 	public float knockbackAmt;
 
-
-	private bool meleeHit;
-	private bool projHit;
 	public GameObject EnemyHealthText;
-	private Text enemyHealthText;
-	private Vector3 respawnLocation;
+	public GameObject comboEffectOne;
+
 
 	// Two public variables that we can set in the editor (on a per-instance basis to change the properties of each platform we drop in the level).
 	public Vector3 direction;    // Controls the direction in X/Y/Z coordinates 
 	public int movementTime;    // Controls the duration (in seconds) that the platform will move for before returning
 	
-	// Private variables to track the timing & direction of the platform 
+	// Private variables
+	private Text enemyHealthText;
+
+	private float spellcountdownTimer;
+	private float meleecountdownTimer;
+
 	private float timer = 0;
 	private bool outgoing = true;
+	private float currentHP = 0;
+
+	private bool meleeHit;
+	private bool projHit;
 
 	void Knockback (GameObject obj){
 
@@ -48,10 +51,6 @@ public class Enemy : MonoBehaviour {
 
 
 	void Start () {
-		
-		// Saves the current transform of the character for when we need to respawn later
-		respawnLocation = this.gameObject.transform.position;
-		
 		// Sets the current HP of the character to the starting HP
 		currentHP = startingHP;
 		
@@ -63,10 +62,15 @@ public class Enemy : MonoBehaviour {
 		
 	}
 	void Update (){
-			float timeElapse = (Time.time - countdownTimer);
-			if (timeElapse >= 1)
+			float timeElapse = (Time.time - meleecountdownTimer);
+			if (timeElapse >= comboCooldown)
 			{
-			projHit = false;
+				projHit = false;
+			}
+			timeElapse = (Time.time - spellcountdownTimer);
+			if (timeElapse >= comboCooldown)
+			{
+				meleeHit = false;
 			}
 
 
@@ -74,7 +78,6 @@ public class Enemy : MonoBehaviour {
 		if (outgoing) {
 			
 			// Basic "Translate" function that will move the object in 3D space by the ammounds specified in the Vector3 (X,Y,Z)
-			// Mulitplied by delta Time to compensate for any fluctuations in frame rate 
 			this.gameObject.transform.Translate (direction * Time.deltaTime);
 			
 			// Increase the timer by delta time each frame, this effectively counts accurately in seconds
@@ -86,7 +89,6 @@ public class Enemy : MonoBehaviour {
 				timer = 0;
 			}
 		}
-		
 		// If the platform is returning to the origin
 		else{
 			
@@ -102,46 +104,53 @@ public class Enemy : MonoBehaviour {
 		}
 	
 		}
-	
+
+
 	// The OnTriggerStay function is called when the collider attached to this game object (whatever object the script is attached to) continuously another collider set to be a "trigger"
 	void OnTriggerStay (Collider collider)
 	{
-		if (collider.tag == "attacks") {
-				
-			if(projHit){
+		if (collider.tag == "attacks") 
+		{
+			if(projHit)
+			{
 				currentHP -= damageRate*30;
+				GameObject lcoe = Instantiate(comboEffectOne,this.transform.position,Quaternion.identity) as GameObject;
+				projHit = false;
+				meleeHit = false;
 			}
+			meleeHit = true;
+			meleecountdownTimer = Time.time;
 
-			// Reduces the current health by the damage rate (remember this fires every frame!)
+
 			currentHP -= damageRate*5;
-
-			// Set the HUD to display the current amount of health
 			enemyHealthText.text = "Enemy " + enemyNumber + " HP:" + Mathf.Round (currentHP);
-
 			Knockback(collider.gameObject);
 
-			// Checks if the currentHP is below or equal to 0, respawns the player and resets health (note that this doesn't "reset" the level, the previously collected items remain collected).
-			// If you do want to reset the level you can instead Application.LoadLevel("YourLevelName") or Application.LoadLevel(0) if you want to load the first level.
-			if (currentHP <= 0) {
-					//this.transform.position = respawnLocation;
-					//currentHP = startingHP;
+			if (currentHP <= 0)
+			{
 					Destroy (this.gameObject);
 			}
 		}
 		if (collider.tag == "spells") {
+			if(meleeHit)
+			{
+				currentHP -= damageRate*30;
+				GameObject lcoe = Instantiate(comboEffectOne,this.transform.position,Quaternion.identity) as GameObject;
+				meleeHit = false;
+				projHit = false;
+			}
+
 			projHit = true;
-			countdownTimer = Time.time;
-			// Reduces the current health by the damage rate (remember this fires every frame!)
+			spellcountdownTimer = Time.time;
 			currentHP -= 5*damageRate;
-			
-			// Set the HUD to display the current amount of health
+
+			//collider.transform.parent.gameObject.SetActive(false);
+			collider.transform.gameObject.SetActive(false);
+
 			enemyHealthText.text = "Enemy " + enemyNumber + " HP:" + Mathf.Round (currentHP);
 			
-			// Checks if the currentHP is below or equal to 0, respawns the player and resets health (note that this doesn't "reset" the level, the previously collected items remain collected).
-			// If you do want to reset the level you can instead Application.LoadLevel("YourLevelName") or Application.LoadLevel(0) if you want to load the first level.
-			if (currentHP <= 0) {
-				//this.transform.position = respawnLocation;
-				//currentHP = startingHP;
+			if (currentHP <= 0) 
+			{
 				Destroy (this.gameObject);
 			}
 		}
