@@ -36,7 +36,7 @@ public class PlayerHealth : MonoBehaviour {
 			// Reduces the current health by the damage rate (remember this fires every frame!)
 			currentHP -= damageRate;
 
-			//kc.Knockback(knockbackAmt, collider.gameObject);
+			kc.Knockback(knockbackAmt, collider.gameObject);
 
 			// Checks if the currentHP is below or equal to 0, respawns the player and resets health (note that this doesn't "reset" the level, the previously collected items remain collected).
 			// If you do want to reset the level you can instead Application.LoadLevel("YourLevelName") or Application.LoadLevel(0) if you want to load the first level.

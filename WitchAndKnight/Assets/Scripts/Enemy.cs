@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour {
 	public int enemyNumber;
 	public float comboCooldown = .3f;
 	public float knockbackAmt;
+	public float turnRedTime;
 
 	public GameObject EnemyHealthText;
 	public GameObject comboEffectOne;
@@ -22,7 +23,7 @@ public class Enemy : MonoBehaviour {
 	
 	// Private variables
 	private Text enemyHealthText;
-
+	
 	private float spellcountdownTimer;
 	private float meleecountdownTimer;
 
@@ -30,24 +31,32 @@ public class Enemy : MonoBehaviour {
 	private bool outgoing = true;
 	private float currentHP = 0;
 
+	private float redTimer = 0f;
+	private bool turnRed = false;
+
 	private bool meleeHit;
 	private bool projHit;
 
+	/// <summary>
+	/// Knockback from the specified obj by knockbackAmt.
+	/// </summary>
+	/// <param name="obj">Object.</param>
+	/// <param name="amt">Amt.</param>
 	void Knockback (GameObject obj){
 
-//		Vector3 direction = (this.transform.position - obj.rigidbody.position).normalized;
-//		
-//		//direction *= amt;
-//		direction.y = 0;
-//		
-//		//cc.Move(direction * amt);
-//
-//
-//		this.rigidbody.velocity = direction * knockbackAmt;
-//		//this.rigidbody.velocity = Vector3.zero;
-
+		CharacterController cc = transform.GetComponent<CharacterController> ();
+		Vector3 moveDirection = (this.transform.position - obj.rigidbody.position);
+		moveDirection.y = 0;
+		moveDirection *= knockbackAmt;		
+		cc.Move (moveDirection);
 	}
 
+	void TurnRed()
+	{
+		turnRed = true;
+		redTimer = 0f;
+		gameObject.renderer.material.color = Color.red;
+	}
 
 
 	void Start () {
@@ -72,6 +81,14 @@ public class Enemy : MonoBehaviour {
 			{
 				meleeHit = false;
 			}
+
+		if (turnRed) {
+			redTimer += Time.deltaTime;
+			if (redTimer >= turnRedTime) {
+				turnRed = false;
+				gameObject.renderer.material.color = Color.white;
+			}
+		}
 
 
 		// If the platform is outgoing aka. moving from its origin toward its destination
@@ -106,8 +123,7 @@ public class Enemy : MonoBehaviour {
 		}
 
 
-	// The OnTriggerStay function is called when the collider attached to this game object (whatever object the script is attached to) continuously another collider set to be a "trigger"
-	void OnTriggerStay (Collider collider)
+	void OnTriggerEnter (Collider collider)
 	{
 		if (collider.tag == "attacks") 
 		{
@@ -121,10 +137,11 @@ public class Enemy : MonoBehaviour {
 			meleeHit = true;
 			meleecountdownTimer = Time.time;
 
+			Knockback(collider.gameObject);
+			TurnRed();
 
 			currentHP -= damageRate*5;
 			enemyHealthText.text = "Enemy " + enemyNumber + " HP:" + Mathf.Round (currentHP);
-			Knockback(collider.gameObject);
 
 			if (currentHP <= 0)
 			{
@@ -143,6 +160,9 @@ public class Enemy : MonoBehaviour {
 			projHit = true;
 			spellcountdownTimer = Time.time;
 			currentHP -= 5*damageRate;
+
+			Knockback(collider.gameObject);
+			TurnRed();
 
 			//collider.transform.parent.gameObject.SetActive(false);
 			collider.transform.gameObject.SetActive(false);

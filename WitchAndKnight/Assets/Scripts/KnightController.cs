@@ -46,11 +46,9 @@ public class KnightController : MonoBehaviour {
 	public void Knockback(float amt, GameObject obj)
 	{
 		CharacterController cc = transform.GetComponent<CharacterController> ();
-		Vector3 moveDirection = (this.transform.position - obj.rigidbody.position); //.normalized;
+		Vector3 moveDirection = (this.transform.position - obj.rigidbody.position); 
 		moveDirection.y = 0;
-		//moveDirection = transform.TransformDirection(moveDirection);
 		moveDirection *= amt;
-
 		cc.Move (moveDirection);
 	}
 
