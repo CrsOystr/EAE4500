@@ -71,16 +71,16 @@ public class Enemy : MonoBehaviour {
 		
 	}
 	void Update (){
-			float timeElapse = (Time.time - meleecountdownTimer);
-			if (timeElapse >= comboCooldown)
-			{
-				projHit = false;
-			}
-			timeElapse = (Time.time - spellcountdownTimer);
-			if (timeElapse >= comboCooldown)
-			{
-				meleeHit = false;
-			}
+		float timeElapse = (Time.time - meleecountdownTimer);
+		if (timeElapse >= comboCooldown)
+		{
+			projHit = false;
+		}
+		timeElapse = (Time.time - spellcountdownTimer);
+		if (timeElapse >= comboCooldown)
+		{
+			meleeHit = false;
+		}
 
 		if (turnRed) {
 			redTimer += Time.deltaTime;
@@ -127,6 +127,8 @@ public class Enemy : MonoBehaviour {
 	{
 		if (collider.tag == "attacks") 
 		{
+			meleeHit = true;
+
 			if(projHit)
 			{
 				currentHP -= damageRate*30;
@@ -134,7 +136,6 @@ public class Enemy : MonoBehaviour {
 				projHit = false;
 				meleeHit = false;
 			}
-			meleeHit = true;
 			meleecountdownTimer = Time.time;
 
 			Knockback(collider.gameObject);
@@ -149,6 +150,8 @@ public class Enemy : MonoBehaviour {
 			}
 		}
 		if (collider.tag == "spells") {
+			projHit = true;
+
 			if(meleeHit)
 			{
 				currentHP -= damageRate*30;
@@ -157,7 +160,6 @@ public class Enemy : MonoBehaviour {
 				projHit = false;
 			}
 
-			projHit = true;
 			spellcountdownTimer = Time.time;
 			currentHP -= 5*damageRate;
 
